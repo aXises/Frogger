@@ -8,6 +8,7 @@
 #include "ledmatrix.h"
 #include "pixel_colour.h"
 #include <stdint.h>
+#include <stdio.h>
 
 ///////////////////////////////// Global variables //////////////////////
 // frog_row and frog_column store the current position of the frog. Row 
@@ -143,19 +144,42 @@ void move_frog_forward(void) {
 }
 
 void move_frog_backward(void) {
-	// Unimplemented
+	// Redraw the row the frog is currently on (this will remove the frog)
+	redraw_row(frog_row);
+	
+	// Check whether this move will cause the frog to die or not
+	frog_dead = will_frog_die_at_position(frog_row-1, frog_column);
+	
+	// Move the frog position forward and show the frog.
+	// We do this whether the frog is alive or not.
+	frog_row--;
+	redraw_frog();
 }
 
 void move_frog_to_left(void) {
-	// Unimplemented
-	// Comments to aid implementation:
-	// Redraw the row the frog is currently on (i.e. without the frog), check 
-	// whether the frog will live or not, update the frog position (if the position 
-	// is not the leftmost column) then and redraw the frog.
+	// Redraw the row the frog is currently on (this will remove the frog)
+	redraw_row(frog_row);
+	printf(5);
+	// Check whether this move will cause the frog to die or not
+	frog_dead = will_frog_die_at_position(frog_row, frog_column-1);
+	
+	// Move the frog position forward and show the frog.
+	// We do this whether the frog is alive or not.
+	frog_column--;
+	redraw_frog();
 }
 
 void move_frog_to_right(void) {
-	// Unimplemented
+	// Redraw the row the frog is currently on (this will remove the frog)
+	redraw_row(frog_row);
+	
+	// Check whether this move will cause the frog to die or not
+	frog_dead = will_frog_die_at_position(frog_row, frog_column+1);
+	
+	// Move the frog position forward and show the frog.
+	// We do this whether the frog is alive or not.
+	frog_column++;
+	redraw_frog();
 }
 
 uint8_t get_frog_row(void) {
