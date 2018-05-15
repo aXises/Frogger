@@ -10,6 +10,7 @@
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "ledmatrix.h"
 #include "scrolling_char_display.h"
@@ -30,9 +31,16 @@ void splash_screen(void);
 void new_game(void);
 void play_game(void);
 void handle_game_over(void);
+void init_life(void);
+void set_life(uint8_t life);
 
 // ASCII code for Escape character
 #define ESCAPE_CHAR 27
+
+
+// Global variables
+uint8_t current_life = 3;
+int on_same_game;
 
 /////////////////////////////// main //////////////////////////////////
 int main(void) {
@@ -57,9 +65,8 @@ void initialise_hardware(void) {
 	// Setup serial port for 19200 baud communication with no echo
 	// of incoming characters
 	init_serial_stdio(19200,0);
-	
 	init_timer0();
-	
+	init_life();
 	// Turn on global interrupts
 	sei();
 }
@@ -70,13 +77,13 @@ void splash_screen(void) {
 	move_cursor(10,10);
 	printf_P(PSTR("Frogger"));
 	move_cursor(10,12);
-	printf_P(PSTR("CSSE2010/7201 project by <your name here>"));
+	printf_P(PSTR("CSSE2010/7201 project by Xinyi Li"));
 	
 	// Output the scrolling message to the LED matrix
 	// and wait for a push button to be pushed.
 	ledmatrix_clear();
 	while(1) {
-		set_scrolling_display_text("FROGGER", COLOUR_GREEN);
+		set_scrolling_display_text("FROGGER S4478355", COLOUR_GREEN);
 		// Scroll the message until it has scrolled off the 
 		// display or a button is pushed
 		while(scroll_display()) {
@@ -88,7 +95,20 @@ void splash_screen(void) {
 	}
 }
 
+void init_life(void) {
+	DDRC = 0b00000111;
+}
+
+void set_life(uint8_t life) {
+	uint8_t new_life = 0;
+	for (int i = 0; i < life; i++) {
+		new_life += i >= 2 ? pow(2, i) + 1 : pow(2, i);
+	}
+	PORTC = DDRC & new_life;
+}
+
 void new_game(void) {
+
 	// Initialise the game and display
 	initialise_game();
 	
@@ -97,6 +117,12 @@ void new_game(void) {
 	
 	// Initialise the score
 	init_score();
+	
+	if (!on_same_game) {
+		current_life = 3;
+		set_life(current_life);
+		
+	}
 	
 	// Clear a button push or serial input if any are waiting
 	// (The cast to void means the return value is ignored.)
@@ -203,12 +229,19 @@ void play_game(void) {
 }
 
 void handle_game_over() {
-	move_cursor(10,14);
-	printf_P(PSTR("GAME OVER"));
-	move_cursor(10,15);
-	printf_P(PSTR("Press a button to start again"));
-	while(button_pushed() == NO_BUTTON_PUSHED) {
-		; // wait
+	current_life--;
+	set_life(current_life);
+	on_same_game = 1;
+	printf("\n %i lives remaining \n", (int) current_life + 1);
+	if (current_life <= 0) {
+		current_life = 3;
+		on_same_game = 0;
+		move_cursor(10,14);
+		printf_P(PSTR("GAME OVER"));
+		move_cursor(10,15);
+		printf_P(PSTR("Press a button to start again"));
+		while(button_pushed() == NO_BUTTON_PUSHED) {
+			; // wait
+		}
 	}
-	
 }
