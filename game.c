@@ -159,7 +159,6 @@ void move_frog_backward(void) {
 void move_frog_to_left(void) {
 	// Redraw the row the frog is currently on (this will remove the frog)
 	redraw_row(frog_row);
-	printf(5);
 	// Check whether this move will cause the frog to die or not
 	frog_dead = will_frog_die_at_position(frog_row, frog_column-1);
 	
