@@ -143,6 +143,9 @@ void play_game(void) {
 	
 	// We play the game while the frog is alive and we haven't filled up the 
 	// far riverbank
+	
+	// Setup array of counters;
+	int counters[5] = {0, 0, 0, 0, 0};
 	while(!is_frog_dead() && !is_riverbank_full()) {
 		if(!is_frog_dead() && frog_has_reached_riverbank()) {
 			// Frog reached the other side successfully but the
@@ -211,16 +214,36 @@ void play_game(void) {
 		// else - invalid input or we're part way through an escape sequence -
 		// do nothing
 		
+		//uint32_t offsets[] = {750, 860, 1000, 1180, 1300};
 		current_time = get_current_time();
-		if(!is_frog_dead() && current_time >= last_move_time + 1000) {
+	
+		if(!is_frog_dead() && current_time >= last_move_time + 100) {
 			// 1000ms (1 second) has passed since the last time we moved
 			// the vehicles and logs - move them again and keep track of
-			// the time when we did this. 
-			scroll_vehicle_lane(0, 1);
-			scroll_vehicle_lane(1, -1);
-			scroll_vehicle_lane(2, 1);
-			scroll_river_channel(0, -1);
-			scroll_river_channel(1, 1);
+			// the time when we did this.
+			if (counters[0] > 10) {
+				scroll_vehicle_lane(0, 1);
+				counters[0] = 0;
+			}
+			if (counters[1] > 13) {
+				scroll_vehicle_lane(1, -1);
+				counters[1] = 0;
+			}
+			if (counters[2] > 8) {
+				scroll_vehicle_lane(2, 1);
+				counters[2] = 0;
+			}
+			if (counters[3] > 9) {
+				scroll_river_channel(0, -1);
+				counters[3] = 0;
+			}
+			if (counters[4] > 11) {
+				scroll_river_channel(1, 1);
+				counters[4] = 0;
+			}
+			for (int i = 0; i < (sizeof(counters) / sizeof(int)); i++) {
+				counters[i]++;
+			}
 			last_move_time = current_time;
 		}
 	}
