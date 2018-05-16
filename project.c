@@ -39,7 +39,9 @@ void set_life(uint8_t life);
 
 
 // Global variables
+// Initial lives of the player
 uint8_t current_life = 3;
+// Determine whether if the player is on the same game with reduced lives or in a fresh start.
 int on_same_game;
 
 /////////////////////////////// main //////////////////////////////////
@@ -66,6 +68,8 @@ void initialise_hardware(void) {
 	// of incoming characters
 	init_serial_stdio(19200,0);
 	init_timer0();
+	
+	// Set up hardware to track lives.
 	init_life();
 	// Turn on global interrupts
 	sei();
@@ -95,10 +99,12 @@ void splash_screen(void) {
 	}
 }
 
+// Set up life tracker with PORT D0, D1, D2.
 void init_life(void) {
 	DDRC = 0b00000111;
 }
 
+// Sets the current life of a player.
 void set_life(uint8_t life) {
 	uint8_t new_life = 0;
 	for (int i = 0; i < life; i++) {
@@ -118,6 +124,7 @@ void new_game(void) {
 	// Initialise the score
 	init_score();
 	
+	// If all lives are expended, reset the lives to start a fresh game.
 	if (!on_same_game) {
 		current_life = 3;
 		set_life(current_life);
@@ -261,30 +268,36 @@ void play_game(void) {
 		
 		current_time = get_current_time();
 	
+		// Reduce the cycle times times	
 		if(!is_frog_dead() && current_time >= last_move_time + 100) {
-			// 1000ms (1 second) has passed since the last time we moved
-			// the vehicles and logs - move them again and keep track of
-			// the time when we did this.
+			// Since the counters tick up every 100ms we can effectively set custom cycle times
+			// by adjusting the max value the counter should tick up to.
+			// 1000ms (10 * 100) cycle
 			if (counters[0] > 10) {
 				scroll_vehicle_lane(0, 1);
 				counters[0] = 0;
 			}
+			// 1300ms (13 * 100) cycle
 			if (counters[1] > 13) {
 				scroll_vehicle_lane(1, -1);
 				counters[1] = 0;
 			}
+			// 800ms (8 * 100) cycle
 			if (counters[2] > 8) {
 				scroll_vehicle_lane(2, 1);
 				counters[2] = 0;
 			}
+			// 900ms (9 * 100) cycle
 			if (counters[3] > 9) {
 				scroll_river_channel(0, -1);
 				counters[3] = 0;
 			}
+			// 1000ms (10 * 100) cycle
 			if (counters[4] > 11) {
 				scroll_river_channel(1, 1);
 				counters[4] = 0;
 			}
+			// Increment each counter every cycle.
 			for (int i = 0; i < (sizeof(counters) / sizeof(int)); i++) {
 				counters[i]++;
 			}
@@ -296,6 +309,8 @@ void play_game(void) {
 }
 
 void handle_game_over() {
+	// Reduce lives until it reaches 0 before proceeding with the normal procedure of
+	// game over handle.
 	current_life--;
 	set_life(current_life);
 	on_same_game = 1;
