@@ -30,5 +30,7 @@ void init_button_interrupts(void);
 
 int8_t button_pushed(void);
 
+// A variable to track the current state of the button.
+volatile int button_down;
 
 #endif /* BUTTONS_H_ */

@@ -75,6 +75,9 @@ ISR(PCINT1_vect) {
 	// the last state to see what has changed.
 	uint8_t button_state = PINB & 0x0F;
 	
+	// Toggle between button down an
+	button_down = !button_down;
+	
 	// Iterate over all the buttons and see which ones have changed.
 	// Any button pushes are added to the queue of button pushes (if
 	// there is space). We ignore button releases so we're just looking

@@ -131,8 +131,8 @@ void new_game(void) {
 }
 
 void play_game(void) {
-	uint32_t current_time, last_move_time;
-	int8_t button;
+	uint32_t current_time, last_move_time, last_button_down;
+	uint8_t button, pressed_button = NO_BUTTON_PUSHED;
 	char serial_input, escape_sequence_char;
 	uint8_t characters_into_escape_sequence = 0;
 	
@@ -140,6 +140,9 @@ void play_game(void) {
 	// and logs were moved.
 	current_time = get_current_time();
 	last_move_time = current_time;
+	
+	// Get the current time and remember the last time the button was pushed.
+	last_button_down = current_time + 500;
 	
 	// We play the game while the frog is alive and we haven't filled up the 
 	// far riverbank
@@ -194,18 +197,55 @@ void play_game(void) {
 			}
 		}
 		
+		// Reset the offset when a button is not been held to ensure the next time auto repeat is triggered
+		// that the first shift is consistent.
+		if (!button_down) {
+			last_button_down = current_time;
+		}
+		
+		// Auto repeat when a button is held down.
+		if (current_time >= last_button_down && button_down) {
+			last_button_down = current_time + 500;
+			// Account for unusual intervals which causes the button to be a unexpected value.
+			if (pressed_button <= 3) {
+				switch (pressed_button)
+				{
+					case 3:
+						move_frog_to_left();
+						break;
+					case 2:
+						move_frog_forward();
+						break;
+					case 1:
+						move_frog_backward();
+						break;
+					case 0:
+						move_frog_to_right();
+						break;
+				}
+			}
+		}
+		
 		// Process the input. 
 		if(button==3 || escape_sequence_char=='D' || serial_input=='L' || serial_input=='l') {
 			// Attempt to move left
+			// Remember the button pressed.
+			pressed_button = button;
 			move_frog_to_left();
 		} else if(button==2 || escape_sequence_char=='A' || serial_input=='U' || serial_input=='u') {
 			// Attempt to move forward
+			// Remember the button pressed.
+			pressed_button = button;
 			move_frog_forward();
 		} else if(button==1 || escape_sequence_char=='B' || serial_input=='D' || serial_input=='d') {
 			// Attempt to move down
+			// Remember the button pressed.
+			pressed_button = button;
 			move_frog_backward();
 		} else if(button==0 || escape_sequence_char=='C' || serial_input=='R' || serial_input=='r') {
 			// Attempt to move right
+			// Remember the button pressed.
+			pressed_button = button;
 			move_frog_to_right();
 		} else if(serial_input == 'p' || serial_input == 'P') {
 			// Unimplemented feature - pause/unpause the game until 'p' or 'P' is
@@ -214,7 +254,11 @@ void play_game(void) {
 		// else - invalid input or we're part way through an escape sequence -
 		// do nothing
 		
-		//uint32_t offsets[] = {750, 860, 1000, 1180, 1300};
+		// Reset the pressed button if no button is being held.
+		if (!button_down) {
+			pressed_button = NO_BUTTON_PUSHED;
+		}
+		
 		current_time = get_current_time();
 	
 		if(!is_frog_dead() && current_time >= last_move_time + 100) {
