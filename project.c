@@ -272,6 +272,7 @@ void play_game(void) {
 				move_frog_to_right();
 			}
 		} else if(serial_input == 'p' || serial_input == 'P') {
+			paused = !paused;
 		} 
 		// else - invalid input or we're part way through an escape sequence -
 		// do nothing
