@@ -43,6 +43,8 @@ void set_life(uint8_t life);
 uint8_t current_life = 3;
 // Determine whether if the player is on the same game with reduced lives or in a fresh start.
 int on_same_game;
+// Whether if the game is paused
+int paused;
 
 /////////////////////////////// main //////////////////////////////////
 int main(void) {
