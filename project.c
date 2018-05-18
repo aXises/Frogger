@@ -139,7 +139,8 @@ void new_game(void) {
 
 void play_game(void) {
 	uint32_t current_time, last_move_time, last_button_down;
-	uint8_t button, pressed_button = NO_BUTTON_PUSHED;
+	uint8_t button; 
+	uint8_t pressed_button = NO_BUTTON_PUSHED;
 	char serial_input, escape_sequence_char;
 	uint8_t characters_into_escape_sequence = 0;
 	
@@ -174,8 +175,8 @@ void play_game(void) {
 		serial_input = -1;
 		escape_sequence_char = -1;
 		button = button_pushed();
-		
-		if(button == NO_BUTTON_PUSHED) {
+
+		if(button == 255) {
 			// No push button was pushed, see if there is any serial input
 			if(serial_input_available()) {
 				// Serial data was available - read the data from standard input
@@ -237,26 +238,40 @@ void play_game(void) {
 		if(button==3 || escape_sequence_char=='D' || serial_input=='L' || serial_input=='l') {
 			// Attempt to move left
 			// Remember the button pressed.
-			pressed_button = button;
-			move_frog_to_left();
+			if (paused) {
+				paused = !paused;
+			} else {
+				pressed_button = button;
+				move_frog_to_left();
+			}
 		} else if(button==2 || escape_sequence_char=='A' || serial_input=='U' || serial_input=='u') {
 			// Attempt to move forward
-			// Remember the button pressed.
-			pressed_button = button;
-			move_frog_forward();
+			// Remember the button pressed
+			if (paused) {
+				paused = !paused;
+			} else {
+				pressed_button = button;
+				move_frog_forward();
+			}
 		} else if(button==1 || escape_sequence_char=='B' || serial_input=='D' || serial_input=='d') {
 			// Attempt to move down
 			// Remember the button pressed.
-			pressed_button = button;
-			move_frog_backward();
+			if (paused) {
+				paused = !paused;
+			} else {
+				pressed_button = button;
+				move_frog_backward();
+			}
 		} else if(button==0 || escape_sequence_char=='C' || serial_input=='R' || serial_input=='r') {
 			// Attempt to move right
 			// Remember the button pressed.
-			pressed_button = button;
-			move_frog_to_right();
+			if (paused) {
+				paused = !paused;
+			} else {
+				pressed_button = button;
+				move_frog_to_right();
+			}
 		} else if(serial_input == 'p' || serial_input == 'P') {
-			// Unimplemented feature - pause/unpause the game until 'p' or 'P' is
-			// pressed again
 		} 
 		// else - invalid input or we're part way through an escape sequence -
 		// do nothing
@@ -273,35 +288,37 @@ void play_game(void) {
 			// Since the counters tick up every 100ms we can effectively set custom cycle times
 			// by adjusting the max value the counter should tick up to.
 			// 1000ms (10 * 100) cycle
-			if (counters[0] > 10) {
-				scroll_vehicle_lane(0, 1);
-				counters[0] = 0;
+			if (!paused) {
+				if (counters[0] > 10) {
+					scroll_vehicle_lane(0, 1);
+					counters[0] = 0;
+				}
+				// 1300ms (13 * 100) cycle
+				if (counters[1] > 13) {
+					scroll_vehicle_lane(1, -1);
+					counters[1] = 0;
+				}
+				// 800ms (8 * 100) cycle
+				if (counters[2] > 8) {
+					scroll_vehicle_lane(2, 1);
+					counters[2] = 0;
+				}
+				// 900ms (9 * 100) cycle
+				if (counters[3] > 9) {
+					scroll_river_channel(0, -1);
+					counters[3] = 0;
+				}
+				// 1000ms (10 * 100) cycle
+				if (counters[4] > 11) {
+					scroll_river_channel(1, 1);
+					counters[4] = 0;
+				}
+				// Increment each counter every cycle.
+				for (int i = 0; i < (sizeof(counters) / sizeof(int)); i++) {
+					counters[i]++;
+				}
+				last_move_time = current_time;
 			}
-			// 1300ms (13 * 100) cycle
-			if (counters[1] > 13) {
-				scroll_vehicle_lane(1, -1);
-				counters[1] = 0;
-			}
-			// 800ms (8 * 100) cycle
-			if (counters[2] > 8) {
-				scroll_vehicle_lane(2, 1);
-				counters[2] = 0;
-			}
-			// 900ms (9 * 100) cycle
-			if (counters[3] > 9) {
-				scroll_river_channel(0, -1);
-				counters[3] = 0;
-			}
-			// 1000ms (10 * 100) cycle
-			if (counters[4] > 11) {
-				scroll_river_channel(1, 1);
-				counters[4] = 0;
-			}
-			// Increment each counter every cycle.
-			for (int i = 0; i < (sizeof(counters) / sizeof(int)); i++) {
-				counters[i]++;
-			}
-			last_move_time = current_time;
 		}
 	}
 	// We get here if the frog is dead or the riverbank is full
