@@ -208,12 +208,12 @@ void play_game(void) {
 		// Reset the offset when a button is not been held to ensure the next time auto repeat is triggered
 		// that the first shift is consistent.
 		if (!button_down) {
-			last_button_down = current_time;
+			last_button_down = current_time + 500;
 		}
 		
 		// Auto repeat when a button is held down.
 		if (current_time >= last_button_down && button_down) {
-			last_button_down = current_time + 500;
+			last_button_down = current_time + 100;
 			// Account for unusual intervals which causes the button to be a unexpected value.
 			if (pressed_button <= 3) {
 				switch (pressed_button)
