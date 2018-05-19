@@ -69,6 +69,11 @@ uint8_t frog_has_reached_riverbank(void);
 // Check whether the frog is alive or dead
 uint8_t is_frog_dead(void);
 
+// Boolean flag to indicate whether the frog is alive or dead
+uint8_t frog_dead;
+
+void redraw_frog(void);
+
 /////////////////////// UPDATE FUNCTIONS /////////////////////////////////////
 // Scroll the given lane of traffic in the given direction. 
 // Check is_frog_dead() to determine whether the frog was killed or not.

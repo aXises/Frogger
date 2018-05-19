@@ -17,9 +17,6 @@
 static int8_t frog_row;
 static int8_t frog_column;
 
-// Boolean flag to indicate whether the frog is alive or dead
-static uint8_t frog_dead;
-
 // Vehicle data - 64 bits in each lane which we loop continuously. A 1
 // indicates the presence of a vehicle, 0 is empty.
 // Index 0 to 2 corresponds to lanes 1 to 3 respectively. Lanes 1 and 3
@@ -90,7 +87,7 @@ static void redraw_roadside(uint8_t row);
 static void redraw_traffic_lane(uint8_t lane);
 static void redraw_river_channel(uint8_t channel);
 static void redraw_riverbank(void);
-static void redraw_frog(void);
+void redraw_frog(void);
 		
 /////////////////////////////// Public Functions ///////////////////////////////
 // These functions are defined in the same order as declared in game.h
@@ -431,7 +428,7 @@ static void redraw_riverbank(void) {
 }
 
 // Redraw the frog in its current position.
-static void redraw_frog(void) {
+void redraw_frog(void) {
 	if(frog_dead) {
 		ledmatrix_update_pixel(frog_column, frog_row, COLOUR_DEAD_FROG);
 	} else {

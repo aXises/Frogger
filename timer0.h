@@ -30,4 +30,6 @@ void init_timer0(void);
  */
 uint32_t get_current_time(void);
 
+volatile int cc;
+
 #endif
