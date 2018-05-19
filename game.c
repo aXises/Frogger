@@ -102,7 +102,7 @@ void initialise_game(void) {
 	riverbank = RIVERBANK;
 	riverbank_status = RIVERBANK;
 	
-	if (!on_same_game)
+	//if (!on_same_game)
 		redraw_whole_display();
 	
 	// Add a frog to the roadside - this will redraw the frog

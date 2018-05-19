@@ -383,14 +383,13 @@ void handle_game_over() {
 	current_life--;
 	set_life(current_life);
 	on_same_game = 1;
-	printf("\n %i lives remaining \n", (int) current_life + 1);
+	display_digit(seven_seg[0], 0, 0);
 	if (current_life <= 0) {
 		on_same_game = 0;
 		move_cursor(10,14);
 		printf_P(PSTR("GAME OVER"));
 		move_cursor(10,15);
 		printf_P(PSTR("Press a button to start again"));
-		while(button_pushed() == NO_BUTTON_PUSHED) {
 	}
 	while(button_pushed() == NO_BUTTON_PUSHED) {
 		; // wait
