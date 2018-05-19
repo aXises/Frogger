@@ -21,6 +21,7 @@
 #include "score.h"
 #include "timer0.h"
 #include "game.h"
+#include "countdown.h"
 
 #define F_CPU 8000000L
 #include <util/delay.h>
@@ -46,6 +47,7 @@ uint8_t current_life = 3;
 int on_same_game;
 // Whether if the game is paused
 int paused;
+uint8_t seven_seg[10] = {63,6,91,79,102,109,125,7,127,111};
 
 /////////////////////////////// main //////////////////////////////////
 int main(void) {
@@ -74,6 +76,8 @@ void initialise_hardware(void) {
 	
 	// Set up hardware to track lives.
 	init_life();
+	
+	init_countdown();
 	// Turn on global interrupts
 	sei();
 }
@@ -128,6 +132,8 @@ void new_game(void) {
 	// Initialise the score
 	init_score();
 	
+	// Reset the countdown timer
+	reset_countdown();
 	// If all lives are expended, reset the lives to start a fresh game.
 	if (!on_same_game) {
 		current_life = STARTING_LIVES;
@@ -147,7 +153,8 @@ void play_game(void) {
 	uint8_t pressed_button = NO_BUTTON_PUSHED;
 	char serial_input, escape_sequence_char;
 	uint8_t characters_into_escape_sequence = 0;
-	
+	int count_ms = 0;
+
 	// Get the current time and remember this as the last time the vehicles
 	// and logs were moved.
 	current_time = get_current_time();
@@ -161,7 +168,35 @@ void play_game(void) {
 	
 	// Setup array of counters;
 	int counters[5] = {0, 0, 0, 0, 0};
+	int counters[7] = {0, 0, 0, 0, 0, 0, 0};
 	while(!is_frog_dead() && !is_riverbank_full()) {
+		
+		// Display the time remaining
+		if (time_remaining_s >= 10) {
+			if (cc)
+				display_digit(seven_seg[1], 1, 0);
+			else
+				display_digit(seven_seg[time_remaining_s % 10], 0, 0);
+		} else if (time_remaining_s > 1)
+			display_digit(seven_seg[time_remaining_s % 10], 0, 0);
+		else {
+			count_ms = 1;
+			if (cc)
+				display_digit(seven_seg[0], 1, 1);
+			else {
+				display_digit(seven_seg[time_remaining_ms > 0 ? time_remaining_ms - 1 : 0], 0, 0);
+			}
+		}
+		
+		// Game over if timer has reached 0
+		if (time_remaining_ms == 0) {
+			display_digit(seven_seg[0], 0, 0);
+			count_ms = 0;
+			frog_dead = 1;
+			redraw_frog();
+			break;
+		}
+
 		if(!is_frog_dead() && frog_has_reached_riverbank()) {
 			// Frog reached the other side successfully but the
 			// riverbank isn't full, put a new frog at the start
@@ -317,6 +352,18 @@ void play_game(void) {
 				if (counters[4] > 11) {
 					scroll_river_channel(1, 1);
 					counters[4] = 0;
+				}
+				// Count down the timer in seconds
+				if (counters[5] > 10) {
+					time_remaining_s--;
+					//printf("\n s = %lu \n", time_remaining_s);
+					counters[5] = 0;
+				}
+				// Count down the timer in ms
+				if (counters[5] > 1 && count_ms) {
+					time_remaining_ms--;
+					//printf("\n ms = %lu, s = %lu \n", time_remaining_ms, time_remaining_ms % 10);
+					counters[6] = 0;
 				}
 				// Increment each counter every cycle.
 				for (int i = 0; i < (sizeof(counters) / sizeof(int)); i++) {
