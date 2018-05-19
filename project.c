@@ -129,16 +129,15 @@ void new_game(void) {
 	// Clear the serial terminal
 	clear_terminal();
 	
-	// Initialise the score
-	init_score();
-	
 	// Reset the countdown timer
 	reset_countdown();
-	// If all lives are expended, reset the lives to start a fresh game.
+	
 	if (!on_same_game) {
+		// If all lives are expended, reset the lives to start a fresh game.
 		current_life = STARTING_LIVES;
 		set_life(current_life);
-		
+		// Initialise the score
+		init_score();
 	}
 	
 	// Clear a button push or serial input if any are waiting
@@ -167,7 +166,6 @@ void play_game(void) {
 	// far riverbank
 	
 	// Setup array of counters;
-	int counters[5] = {0, 0, 0, 0, 0};
 	int counters[7] = {0, 0, 0, 0, 0, 0, 0};
 	while(!is_frog_dead() && !is_riverbank_full()) {
 		
@@ -244,8 +242,7 @@ void play_game(void) {
 			}
 		}
 		
-		// Reset the offset when a button is not been held to ensure the next time auto repeat is triggered
-		// that the first shift is consistent.
+		// Add a delay to the hold before triggering auto delay.
 		if (!button_down) {
 			last_button_down = current_time + 500;
 		}
