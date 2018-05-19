@@ -106,10 +106,10 @@ void splash_screen(void) {
 	}
 }
 
-// Set up life tracker with PORT D0, D1, D2.
+// Set up life tracker with PORT D0 - D4.
 void init_life(void) {
 	current_life = STARTING_LIVES;
-	DDRC = 0b00001111;
+	DDRC = 0b00011111;
 }
 
 // Sets the current life of a player.
@@ -385,14 +385,14 @@ void handle_game_over() {
 	on_same_game = 1;
 	printf("\n %i lives remaining \n", (int) current_life + 1);
 	if (current_life <= 0) {
-		current_life = 3;
 		on_same_game = 0;
 		move_cursor(10,14);
 		printf_P(PSTR("GAME OVER"));
 		move_cursor(10,15);
 		printf_P(PSTR("Press a button to start again"));
 		while(button_pushed() == NO_BUTTON_PUSHED) {
-			; // wait
-		}
+	}
+	while(button_pushed() == NO_BUTTON_PUSHED) {
+		; // wait
 	}
 }
