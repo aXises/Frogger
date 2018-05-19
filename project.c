@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <math.h>
 
+#include "project.h"
 #include "ledmatrix.h"
 #include "scrolling_char_display.h"
 #include "buttons.h"
@@ -103,7 +104,8 @@ void splash_screen(void) {
 
 // Set up life tracker with PORT D0, D1, D2.
 void init_life(void) {
-	DDRC = 0b00000111;
+	current_life = 3;
+	DDRC = 0b00001111;
 }
 
 // Sets the current life of a player.

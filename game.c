@@ -7,6 +7,7 @@
 #include "game.h"
 #include "ledmatrix.h"
 #include "pixel_colour.h"
+#include "project.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -104,7 +105,8 @@ void initialise_game(void) {
 	riverbank = RIVERBANK;
 	riverbank_status = RIVERBANK;
 	
-	redraw_whole_display();
+	if (!on_same_game)
+		redraw_whole_display();
 	
 	// Add a frog to the roadside - this will redraw the frog
 	put_frog_in_start_position();
