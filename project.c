@@ -39,14 +39,6 @@ void set_life(uint8_t life);
 // ASCII code for Escape character
 #define ESCAPE_CHAR 27
 
-
-// Global variables
-// Initial lives of the player
-uint8_t current_life = 3;
-// Determine whether if the player is on the same game with reduced lives or in a fresh start.
-int on_same_game;
-// Whether if the game is paused
-int paused;
 uint8_t seven_seg[10] = {63,6,91,79,102,109,125,7,127,111};
 
 /////////////////////////////// main //////////////////////////////////
