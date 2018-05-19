@@ -15,7 +15,7 @@ void init_score(void) {
 
 void add_to_score(uint16_t value) {
 	score += value;
-	printf("\n %15d \n", score);
+	printf("\n %40s : %lu \n", "Score", score);
 }
 
 uint32_t get_score(void) {
