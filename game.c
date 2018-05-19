@@ -8,6 +8,8 @@
 #include "ledmatrix.h"
 #include "pixel_colour.h"
 #include "project.h"
+#include "score.h"
+#include "countdown.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -130,7 +132,8 @@ void move_frog_forward(void) {
 	
 	// Check whether this move will cause the frog to die or not
 	frog_dead = will_frog_die_at_position(frog_row+1, frog_column);
-	
+	if (!frog_dead)
+		add_to_score(1);
 	// Move the frog position forward and show the frog. 
 	// We do this whether the frog is alive or not. 
 	frog_row++;
@@ -138,6 +141,8 @@ void move_frog_forward(void) {
 	
 	// If the frog has ended up successfully in row 7 - add it to the riverbank_status flag
 	if(!frog_dead && frog_row == RIVERBANK_ROW) {
+		add_to_score(10);
+		reset_countdown();
 		riverbank_status |= (1<<frog_column);
 	}
 }
