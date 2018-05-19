@@ -104,7 +104,7 @@ void splash_screen(void) {
 
 // Set up life tracker with PORT D0, D1, D2.
 void init_life(void) {
-	current_life = 3;
+	current_life = STARTING_LIVES;
 	DDRC = 0b00001111;
 }
 
@@ -130,7 +130,7 @@ void new_game(void) {
 	
 	// If all lives are expended, reset the lives to start a fresh game.
 	if (!on_same_game) {
-		current_life = 3;
+		current_life = STARTING_LIVES;
 		set_life(current_life);
 		
 	}

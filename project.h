@@ -5,6 +5,8 @@
  *  Author: Xinyi Li
  */ 
 
+#define STARTING_LIVES 3;
+
 // Global variables
 // Initial lives of the player
 uint8_t current_life;
