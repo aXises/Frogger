@@ -101,7 +101,7 @@ void splash_screen(void) {
 // Set up life tracker with PORT D0 - D4.
 void init_life(void) {
 	current_life = STARTING_LIVES;
-	DDRC = 0b00011111;
+	DDRC = 0b00111111;
 }
 
 // Sets the current life of a player.
@@ -110,7 +110,8 @@ void set_life(uint8_t life) {
 	for (int i = 0; i < life; i++) {
 		new_life += i >= 2 ? pow(2, i) + 1 : pow(2, i);
 	}
-	PORTC = DDRC & new_life;
+	PORTC &= ~(DDRC & new_life);
+	PORTC |= DDRC & new_life;
 }
 
 void new_game(void) {

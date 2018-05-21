@@ -15,7 +15,7 @@
 void display_digit(uint8_t digit, int cc_switch, int decimal) {	
 	PORTA = digit == 0 ? 0 : digit;
 	PORTA = decimal == 0 ? PORTA & ~(1<<PORTA7) : PORTA | (1<<PORTA7);
-	PORTC = cc_switch == 0 ? PORTC & ~(1<<PORTC3) : PORTC | (1<<PORTC3);
+	PORTC = cc_switch == 0 ? PORTC & ~(1<<PORTC5) : PORTC | (1<<PORTC5);
 }
 
 void init_countdown() {
