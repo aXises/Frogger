@@ -3,7 +3,7 @@
  *
  * Main file
  *
- * Author: Peter Sutton. Modified by <YOUR NAME HERE>
+ * Author: Peter Sutton. Modified by Xinyi Li
  */ 
 
 #include <avr/io.h>
@@ -101,7 +101,7 @@ void splash_screen(void) {
 // Set up life tracker with PORT D0 - D4.
 void init_life(void) {
 	current_life = STARTING_LIVES;
-	DDRC = 0b00111111;
+	DDRA |= 0b00011111;
 }
 
 // Sets the current life of a player.
@@ -110,10 +110,8 @@ void set_life(uint8_t life) {
 	for (int i = 0; i < life; i++) {
 		new_life += i >= 2 ? pow(2, i) + 1 : pow(2, i);
 	}
-	PORTC = DDRC & new_life;
-	if (PORTC5) {
-		PORTC |= (1<<PORTC5);
-	}
+	PORTA &= ~(1<<4) | (1<<3) | (1<<2) | (1<<1) | (1<<0);
+	PORTA = new_life;
 }
 
 void new_game(void) {
@@ -387,8 +385,8 @@ void handle_game_over() {
 		if (current_life < 5)
 			set_life(++current_life);
 	} else {
-		set_life(--current_life);
 		display_digit(seven_seg[0], 1, 0);
+		set_life(--current_life);
 		if (current_life <= 0) {
 			on_same_game = 0;
 			move_cursor(10,14);

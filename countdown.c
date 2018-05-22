@@ -13,13 +13,14 @@
 #include "timer0.h"
 
 void display_digit(uint8_t digit, int cc_switch, int decimal) {	
-	PORTA = digit == 0 ? 0 : digit;
-	PORTA = decimal == 0 ? PORTA & ~(1<<PORTA7) : PORTA | (1<<PORTA7);
-	PORTC = cc_switch == 0 ? PORTC & ~(1<<PORTC5) : PORTC | (1<<PORTC5);
+	PORTC = digit == 0 ? 0 : digit;
+	PORTC = decimal == 0 ? PORTC & ~(1<<PORTC7) : PORTC | (1<<PORTC7);
+	PORTD = cc_switch == 0 ? PORTD & ~(1<<PORTD2) : PORTD | (1<<PORTD2);
 }
 
 void init_countdown() {
-	DDRA = 0xFF;
+	DDRC = 0xFF;
+	DDRD = (1<<DDRD2);
 	reset_countdown();
 }
 
