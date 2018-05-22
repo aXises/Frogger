@@ -14,3 +14,5 @@ uint8_t current_life;
 int on_same_game;
 // Whether if the game is paused
 int paused;
+// Current level the player is on
+int current_level;
