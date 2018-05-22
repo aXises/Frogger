@@ -24,10 +24,27 @@ static int8_t frog_column;
 // Index 0 to 2 corresponds to lanes 1 to 3 respectively. Lanes 1 and 3
 // will move to the right; lane 2 will move to the left.
 #define LANE_DATA_WIDTH 64	// must be power of 2
-static uint64_t lane_data[3] = {
-		0b1100001100011000110000011001100011000011000110001100000110011000,
-		0b0011100000111000011100000111000011100001110001110000111000011100,
-		0b0000111100001111000011110000111100001111000001111100001111000111
+static uint64_t lane_data[4][3] = {
+		{
+			0b1100001100011000110000011001100011000011000110001100000110011000,
+			0b0011100000111000011100000111000011100001110001110000111000011100,
+			0b0000111100001111000011110000111100001111000001111100001111000111
+		},
+		{
+			0b0000111100001111000011110000111100001111000001111100001111000111,
+			0b1100001100011000110000011001100011000011000110001100000110011000,
+			0b0000111100001111000011110000111100001111000001111100001111000111
+		},
+		{
+			0b1111110011111100011000001100110001100001100011111110111011001100,
+			0b0011100000111000011100000111000011100001110001110000111000011100,
+			0b0000111100001111000011110000111100001111000001111100001111000111
+		},
+		{
+			0b1111000110011100011110001111100011110001100111000111100011111000,
+			0b0010010010010010000111101011110010010010010010010001111010111101,
+			0b0000111100001111000011110000111100001111000001111100001111000111
+		},
 };
 		
 // Log data - 32 bits for each log channel which we loop continuously.
@@ -35,9 +52,23 @@ static uint64_t lane_data[3] = {
 // Index 0 to 1 corresponds to rows 5 and 6 respectively. Row 5 will move
 // to the left; row 6 will move to the right
 #define LOG_DATA_WIDTH 32 // must be power of 2
-static uint32_t log_data[2] = {
-		0b11110001100111000111100011111000,
-		0b11100110111101100001110110011100
+static uint32_t log_data[4][2] = {
+		{
+			0b11110001100111000111100011111000,
+			0b11100110111101100001110110011100
+		},
+		{
+			0b01010101000101010101010001010101,
+			0b001001001001001000011110101111001
+		},
+		{
+			0b11111001110111000111100011001000,
+			0b01010101000101010101010001010101
+		},
+		{
+			0b11100110111101100001110110011100,
+			0b00100100100100100001111010111101
+		}
 };
 
 // Lane positions. The bit position (0 to 63) of the lane_data above that is
@@ -56,8 +87,18 @@ static int8_t log_position[2];
 #define COLOUR_EDGES		COLOUR_LIGHT_GREEN
 #define COLOUR_WATER		COLOUR_BLACK
 #define COLOUR_ROAD			COLOUR_BLACK
-#define COLOUR_LOGS			COLOUR_ORANGE
-PixelColour vehicle_colours[3] = { COLOUR_RED, COLOUR_YELLOW, COLOUR_RED }; // by lane
+PixelColour colour_logs[4] = {
+	COLOUR_ORANGE,
+	COLOUR_RED,
+	COLOUR_YELLOW,
+	COLOUR_ORANGE
+};
+PixelColour vehicle_colours[4][3] = {
+	{ COLOUR_RED, COLOUR_YELLOW, COLOUR_RED },
+	{ COLOUR_YELLOW, COLOUR_GREEN, COLOUR_YELLOW },
+	{ COLOUR_GREEN, COLOUR_RED, COLOUR_GREEN },
+	{ COLOUR_RED, COLOUR_GREEN, COLOUR_RED }
+}; // by lane
 
 // Rows
 #define START_ROW 0	// row position where the frog starts
@@ -292,7 +333,7 @@ static uint8_t will_frog_die_at_position(int8_t row, int8_t column) {
 			if(bit_position >= LANE_DATA_WIDTH) {
 				bit_position -= LANE_DATA_WIDTH;
 			}
-			return (lane_data[lane] >> bit_position) & 1;
+			return (lane_data[current_level % 4][lane] >> bit_position) & 1;
 			break;
 		case 5:
 		case 6:
@@ -301,7 +342,7 @@ static uint8_t will_frog_die_at_position(int8_t row, int8_t column) {
 			if(bit_position >= LOG_DATA_WIDTH) {
 				bit_position -= LOG_DATA_WIDTH;
 			}
-			return !((log_data[channel] >> bit_position) & 1);
+			return !((log_data[current_level % 4][channel] >> bit_position) & 1);
 			break;
 		case 7:
 			return (riverbank_status >> column) & 1;
@@ -377,8 +418,8 @@ static void redraw_traffic_lane(uint8_t lane) {
 	uint8_t i;
 	uint8_t bit_position = lane_position[lane];
 	for(i=0; i<=15; i++) {
-		if((lane_data[lane] >> bit_position) & 1) {
-			row_display_data[i] = vehicle_colours[lane];
+		if((lane_data[current_level % 4][lane] >> bit_position) & 1) {
+			row_display_data[i] = vehicle_colours[current_level % 4][lane];
 			} else {
 			row_display_data[i] = COLOUR_ROAD;
 		}
@@ -397,8 +438,8 @@ static void redraw_river_channel(uint8_t channel) {
 	uint8_t i;
 	uint8_t bit_position = log_position[channel];
 	for(i=0; i<=15; i++) {
-		if((log_data[channel] >> bit_position) & 1) {
-			row_display_data[i] = COLOUR_LOGS;
+		if((log_data[current_level % 4][channel] >> bit_position) & 1) {
+			row_display_data[i] = colour_logs[current_level % 4];
 			} else {
 			row_display_data[i] = COLOUR_WATER;
 		}
