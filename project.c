@@ -46,11 +46,11 @@ int main(void) {
 	// Setup hardware and call backs. This will turn on 
 	// interrupts.
 	initialise_hardware();
-	current_level = 0;
+	
 	// Show the splash screen message. Returns when display
 	// is complete
 	splash_screen();
-	
+	current_level = 0;
 	while(1) {
 		new_game();
 		play_game();
@@ -110,8 +110,10 @@ void set_life(uint8_t life) {
 	for (int i = 0; i < life; i++) {
 		new_life += i >= 2 ? pow(2, i) + 1 : pow(2, i);
 	}
-	PORTC &= ~(DDRC & new_life);
-	PORTC |= DDRC & new_life;
+	PORTC = DDRC & new_life;
+	if (PORTC5) {
+		PORTC |= (1<<PORTC5);
+	}
 }
 
 void new_game(void) {
