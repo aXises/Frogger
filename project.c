@@ -372,7 +372,10 @@ void handle_game_over() {
 	// Reduce lives until it reaches 0 before proceeding with the normal procedure of
 	// game over handle.
 	on_same_game = 1;
-	if (1) {
+	if (is_riverbank_full()) {
+		display_digit(seven_seg[(current_level % 10) + 1], 1, 0);
+		move_cursor(10,14);
+		printf("\n Current Level: %i \n", current_level);
 		set_scrolling_display_text("", 0);
 		int i = 0;
 		while(scroll_display() && i < 15) {
@@ -385,7 +388,7 @@ void handle_game_over() {
 			set_life(++current_life);
 	} else {
 		set_life(--current_life);
-		//display_digit(seven_seg[0], 0, 0);
+		display_digit(seven_seg[0], 1, 0);
 		if (current_life <= 0) {
 			on_same_game = 0;
 			move_cursor(10,14);
