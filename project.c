@@ -318,28 +318,29 @@ void play_game(void) {
 			// Since the counters tick up every 100ms we can effectively set custom cycle times
 			// by adjusting the max value the counter should tick up to.
 			// 1000ms (10 * 100) cycle
+			int scale = current_level < 6 ? current_level : 6;
 			if (!paused) {
-				if (counters[0] > (10 - current_level)) {
+				if (counters[0] > (10 - scale)) {
 					scroll_vehicle_lane(0, 1);
 					counters[0] = 0;
 				}
 				// 1300ms (13 * 100) cycle
-				if (counters[1] > (13 - current_level)) {
+				if (counters[1] > (13 - scale)) {
 					scroll_vehicle_lane(1, -1);
 					counters[1] = 0;
 				}
 				// 800ms (8 * 100) cycle
-				if (counters[2] > (8 - current_level)) {
+				if (counters[2] > (8 - scale)) {
 					scroll_vehicle_lane(2, 1);
 					counters[2] = 0;
 				}
 				// 900ms (9 * 100) cycle
-				if (counters[3] > (9 - current_level)) {
+				if (counters[3] > (9 - scale)) {
 					scroll_river_channel(0, -1);
 					counters[3] = 0;
 				}
 				// 1000ms (10 * 100) cycle
-				if (counters[4] > (11 - current_level)) {
+				if (counters[4] > (11 - scale)) {
 					scroll_river_channel(1, 1);
 					counters[4] = 0;
 				}
