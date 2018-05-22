@@ -392,6 +392,8 @@ void handle_game_over() {
 			printf_P(PSTR("GAME OVER"));
 			move_cursor(10,15);
 			printf_P(PSTR("Press a button to start again"));
+			move_cursor(10,16);
+			printf("\n Your score is : %lu\n", get_score());
 		}
 		while(button_pushed() == NO_BUTTON_PUSHED) {
 			; // wait
