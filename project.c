@@ -267,39 +267,27 @@ void play_game(void) {
 		if(button==3 || escape_sequence_char=='D' || serial_input=='L' || serial_input=='l') {
 			// Attempt to move left
 			// Remember the button pressed.
-			if (paused) {
-				paused = !paused;
-			} else {
-				pressed_button = button;
-				move_frog_to_left();
-			}
+			pressed_button = button;
+			move_frog_to_left();
+			
 		} else if(button==2 || escape_sequence_char=='A' || serial_input=='U' || serial_input=='u') {
 			// Attempt to move forward
 			// Remember the button pressed
-			if (paused) {
-				paused = !paused;
-			} else {
-				pressed_button = button;
-				move_frog_forward();
-			}
+			pressed_button = button;
+			move_frog_forward();
+			
 		} else if(button==1 || escape_sequence_char=='B' || serial_input=='D' || serial_input=='d') {
 			// Attempt to move down
 			// Remember the button pressed.
-			if (paused) {
-				paused = !paused;
-			} else {
-				pressed_button = button;
-				move_frog_backward();
-			}
+			pressed_button = button;
+			move_frog_backward();
+			
 		} else if(button==0 || escape_sequence_char=='C' || serial_input=='R' || serial_input=='r') {
 			// Attempt to move right
 			// Remember the button pressed.
-			if (paused) {
-				paused = !paused;
-			} else {
-				pressed_button = button;
-				move_frog_to_right();
-			}
+			pressed_button = button;
+			move_frog_to_right();
+			
 		} else if(serial_input == 'p' || serial_input == 'P') {
 			paused = !paused;
 		} 
