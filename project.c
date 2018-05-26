@@ -176,6 +176,7 @@ void play_game(void) {
 	int y = 500;
 	int last_direction = 0;
 	int joy_held = 0;
+	int is_first_pass = 1;
 	
 	// Setup array of counters;
 	int counters[7] = {0, 0, 0, 0, 0, 0, 0};
@@ -262,6 +263,13 @@ void play_game(void) {
 			x = ADC;
 		}
 		ADCSRA |= (1<<ADSC);
+		
+		// On the first cycle of the loop the joy stick is in a unusual configuration.
+		if (is_first_pass) {
+			x = 500;
+			y = 500;
+		}
+		
 		uint32_t mag = sqrt(pow(x - 500, 2) + pow(y - 500, 2));
 		int angle = atan2(y - 500, x - 500) * (180/M_PI);
 		if (mag > 400) {
@@ -325,6 +333,9 @@ void play_game(void) {
 		}
 		
 		x_or_y = !x_or_y;
+		
+		if (is_first_pass)
+			is_first_pass = 0;
 		
 		// Add a delay to the hold before triggering auto delay.
 		if (!button_down) {
