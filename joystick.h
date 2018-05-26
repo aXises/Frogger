@@ -5,6 +5,6 @@
  *  Author: Xinyi Li
  */ 
 
-void init_joy_interrupts(void);
+void initialise_joystick(void);
 
 int joystick_enable;
