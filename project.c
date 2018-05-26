@@ -133,6 +133,8 @@ void new_game(void) {
 	// Reset the countdown timer
 	reset_countdown();
 	
+	// Enable Joystick
+	joystick_enable = 1;
 	if (!on_same_game) {
 		// If all lives are expended, reset the lives to start a fresh game.
 		current_level = 0;
@@ -393,6 +395,7 @@ void handle_game_over() {
 			move_cursor(10,16);
 			printf("\n Your score is : %lu\n", get_score());
 		}
+		joystick_enable = 0;
 		while(button_pushed() == NO_BUTTON_PUSHED) {
 			; // wait
 		}
