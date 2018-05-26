@@ -286,12 +286,16 @@ void play_game(void) {
 				move_frog_to_right();
 				last_direction = 4;
 			} else if (last_direction != 5 && angle > 30 && angle < 60) {
+				move_frog_up_left();
 				last_direction = 5;
 			} else if (last_direction != 6 && angle > 120 && angle < 150) {
+				move_frog_up_right();
 				last_direction = 6;
 			} else if (last_direction != 7 && angle < -30 && angle > -60) {
+				move_frog_down_left();
 				last_direction = 7;
 			} else if (last_direction != 8 && angle < -120 && angle > -150) {
+				move_frog_down_right();
 				last_direction = 8;
 			}
 			if (!joy_held && last_direction != 0) {
@@ -322,12 +326,16 @@ void play_game(void) {
 					move_frog_to_right();
 					break;
 				case 5:
+					move_frog_up_left();
 					break;
 				case 6:
+					move_frog_up_right();
 					break;
 				case 7:
+					move_frog_down_left();
 					break;
 				case 8:
+					move_frog_down_right();
 					break;
 			}
 		}
