@@ -242,6 +242,88 @@ void move_frog_to_right(void) {
 	}
 }
 
+void move_frog_up_left(void) {
+	if (paused)
+		paused = !paused;
+	else {
+		// Redraw the row the frog is currently on (this will remove the frog)
+		redraw_row(frog_row);
+		
+		// Check whether this move will cause the frog to die or not
+		frog_dead = will_frog_die_at_position(frog_row+1, frog_column-1);
+		if (!frog_dead)
+			add_to_score(1);
+		// Move the frog position forward and show the frog.
+		// We do this whether the frog is alive or not.
+		frog_row++;
+		frog_column--;
+		redraw_frog();
+		if(!frog_dead && frog_row == RIVERBANK_ROW) {
+			add_to_score(10);
+			reset_countdown();
+			riverbank_status |= (1<<frog_column);
+		}
+	}
+}
+
+void move_frog_up_right(void) {
+	if (paused)
+	paused = !paused;
+	else {
+		// Redraw the row the frog is currently on (this will remove the frog)
+		redraw_row(frog_row);
+
+		// Check whether this move will cause the frog to die or not
+		frog_dead = will_frog_die_at_position(frog_row+1, frog_column+1);
+		if (!frog_dead)
+			add_to_score(1);
+		// Move the frog position forward and show the frog.
+		// We do this whether the frog is alive or not.
+		frog_row++;
+		frog_column++;
+		redraw_frog();
+		if(!frog_dead && frog_row == RIVERBANK_ROW) {
+			add_to_score(10);
+			reset_countdown();
+			riverbank_status |= (1<<frog_column);
+		}
+	}
+}
+
+void move_frog_down_left(void) {
+	if (paused)
+	paused = !paused;
+	else {
+		// Redraw the row the frog is currently on (this will remove the frog)
+		redraw_row(frog_row);
+		
+		// Check whether this move will cause the frog to die or not
+		frog_dead = will_frog_die_at_position(frog_row-1, frog_column-1);
+		// Move the frog position forward and show the frog.
+		// We do this whether the frog is alive or not.
+		frog_row--;
+		frog_column--;
+		redraw_frog();
+	}
+}
+
+void move_frog_down_right(void) {
+	if (paused)
+	paused = !paused;
+	else {
+		// Redraw the row the frog is currently on (this will remove the frog)
+		redraw_row(frog_row);
+		
+		// Check whether this move will cause the frog to die or not
+		frog_dead = will_frog_die_at_position(frog_row-1, frog_column+1);
+
+		// Move the frog position forward and show the frog.
+		// We do this whether the frog is alive or not.
+		frog_row--;
+		frog_column++;
+		redraw_frog();
+	}
+}
 uint8_t get_frog_row(void) {
 	return frog_row;
 }
