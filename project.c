@@ -110,7 +110,7 @@ void set_life(uint8_t life) {
 	for (int i = 0; i < life; i++) {
 		new_life += i >= 2 ? pow(2, i) + 1 : pow(2, i);
 	}
-	PORTA &= ~(1<<4) | (1<<3) | (1<<2) | (1<<1) | (1<<0);
+	PORTA &= ~(1<<4) | ~(1<<3) | ~(1<<2) | ~(1<<1) | ~(1<<0);
 	PORTA = new_life;
 }
 
