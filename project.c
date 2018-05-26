@@ -22,6 +22,7 @@
 #include "timer0.h"
 #include "game.h"
 #include "countdown.h"
+#include "joystick.h"
 
 #define F_CPU 8000000L
 #include <util/delay.h>
@@ -46,7 +47,7 @@ int main(void) {
 	// Setup hardware and call backs. This will turn on 
 	// interrupts.
 	initialise_hardware();
-	
+
 	// Show the splash screen message. Returns when display
 	// is complete
 	splash_screen();
@@ -61,15 +62,23 @@ int main(void) {
 void initialise_hardware(void) {
 	ledmatrix_setup();
 	init_button_interrupts();
+
 	// Setup serial port for 19200 baud communication with no echo
 	// of incoming characters
 	init_serial_stdio(19200,0);
+	
+	// Initialise joystick
+	initialise_joystick();
+	
+	// Setup timer
 	init_timer0();
 	
 	// Set up hardware to track lives.
 	init_life();
-	
+
+	// Setup count down timer
 	init_countdown();
+	
 	// Turn on global interrupts
 	sei();
 }
