@@ -151,7 +151,7 @@ void new_game(void) {
 }
 
 void play_game(void) {
-	uint32_t current_time, last_move_time, last_button_down;
+	uint32_t current_time, last_move_time, last_button_down, last_joy_held;
 	uint8_t button; 
 	uint8_t pressed_button = NO_BUTTON_PUSHED;
 	char serial_input, escape_sequence_char;
@@ -286,10 +286,46 @@ void play_game(void) {
 			} else if (last_direction != 8 && angle < -120 && angle > -150) {
 				last_direction = 8;
 			}
+			if (!joy_held && last_direction != 0) {
+				joy_held = 1;
+			}
 		} else {
 			last_direction = 0;
 			joy_held = 0;
 		}
+		
+		if (!joy_held) {
+			last_joy_held = current_time + 500;
+		}
+		
+		if (current_time >= last_joy_held && joy_held) {
+			last_joy_held = current_time + 100;
+			switch (last_direction) {
+				case 1:
+					move_frog_forward();
+					break;
+				case 2:
+					move_frog_backward();
+					break;
+				case 3:
+					move_frog_to_left();
+					break;
+				case 4:
+					move_frog_to_right();
+					break;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+				case 8:
+					break;
+			}
+		}
+		
+		x_or_y = !x_or_y;
+		
 		// Add a delay to the hold before triggering auto delay.
 		if (!button_down) {
 			last_button_down = current_time + 500;
