@@ -169,6 +169,14 @@ void play_game(void) {
 	// We play the game while the frog is alive and we haven't filled up the 
 	// far riverbank
 	
+	//Joystick control variables
+	last_joy_held = current_time + 500;
+	uint8_t x_or_y = 0;
+	int x = 500;
+	int y = 500;
+	int last_direction = 0;
+	int joy_held = 0;
+	
 	// Setup array of counters;
 	int counters[7] = {0, 0, 0, 0, 0, 0, 0};
 	while(!is_frog_dead() && !is_riverbank_full()) {
@@ -246,6 +254,16 @@ void play_game(void) {
 			}
 		}
 		
+		if(x_or_y == 0) {
+			ADMUX = (1<<REFS0) | (1<<MUX2) | (1<<MUX0);
+			y = ADC;
+		} else {
+			ADMUX = (1<<REFS0) | (1<<MUX2) | (1<<MUX1);
+			x = ADC;
+		}
+		ADCSRA |= (1<<ADSC);
+		uint32_t mag = sqrt(pow(x - 500, 2) + pow(y - 500, 2));
+		int angle = atan2(y - 500, x - 500) * (180/M_PI);
 		// Add a delay to the hold before triggering auto delay.
 		if (!button_down) {
 			last_button_down = current_time + 500;
