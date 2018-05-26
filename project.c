@@ -264,6 +264,32 @@ void play_game(void) {
 		ADCSRA |= (1<<ADSC);
 		uint32_t mag = sqrt(pow(x - 500, 2) + pow(y - 500, 2));
 		int angle = atan2(y - 500, x - 500) * (180/M_PI);
+		if (mag > 400) {
+			if (last_direction != 1 && angle > 60 && angle < 120) {
+				move_frog_forward();
+				last_direction = 1;
+			} else if (last_direction != 2 && angle < -60 && angle > -120) {
+				move_frog_backward();
+				last_direction = 2;
+			} else if (last_direction != 3 && angle > -30 && angle < 30) {
+				move_frog_to_left();
+				last_direction = 3;
+			} else if (last_direction != 4 && (angle < -150 || angle > 150)) {
+				move_frog_to_right();
+				last_direction = 4;
+			} else if (last_direction != 5 && angle > 30 && angle < 60) {
+				last_direction = 5;
+			} else if (last_direction != 6 && angle > 120 && angle < 150) {
+				last_direction = 6;
+			} else if (last_direction != 7 && angle < -30 && angle > -60) {
+				last_direction = 7;
+			} else if (last_direction != 8 && angle < -120 && angle > -150) {
+				last_direction = 8;
+			}
+		} else {
+			last_direction = 0;
+			joy_held = 0;
+		}
 		// Add a delay to the hold before triggering auto delay.
 		if (!button_down) {
 			last_button_down = current_time + 500;
