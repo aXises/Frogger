@@ -80,3 +80,35 @@ void play_sound(uint16_t freq, uint32_t duration) {
 	last_play_time = get_current_time() + duration;
 	
 }
+
+ISR(TIMER1_COMPA_vect) {
+	if (playing_sound && !paused) {
+		current_time = get_current_time();
+		if (current_time >= last_play_time) {
+			disable_sound();
+			last_play_time = current_time;
+		}
+		if (!paused) {
+			if (pulsewidth > 0) {
+				// The compare value is one less than the number of clock cycles in the pulse width
+				OCR1B = pulsewidth - 1;
+				} else {
+				OCR1B = 0;
+			}
+		}
+	}
+
+}
+
+ISR(PCINT3_vect) {
+	sound_on = bit_is_set(PIND, PIND3) == 8 ? 1 : 0;
+	sound_quiet = bit_is_set(PIND, PIND5) == 32 ? 1 : 0;
+	if (!paused) {
+		if (sound_quiet && sound_on)
+			pulsewidth = duty_cycle_to_pulse_width(0.15, clockperiod);
+		else if (sound_on)
+			pulsewidth = duty_cycle_to_pulse_width(dutycycle, clockperiod);
+		else
+			pulsewidth = duty_cycle_to_pulse_width(0, clockperiod);
+	}
+}
