@@ -10,6 +10,7 @@
 #include "project.h"
 #include "score.h"
 #include "countdown.h"
+#include "sound.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -168,6 +169,7 @@ void put_frog_in_start_position(void) {
 // This function assumes that the frog is not in row 7 (the top row). A frog in row 7 is out
 // of the game.
 void move_frog_forward(void) {
+	play_sound(100, 200);
 	if (paused)
 		paused = !paused;
 	else {
@@ -193,6 +195,7 @@ void move_frog_forward(void) {
 }
 
 void move_frog_backward(void) {
+	play_sound(100, 200);
 	if (paused)
 		paused = !paused;
 	else {
@@ -210,6 +213,7 @@ void move_frog_backward(void) {
 }
 
 void move_frog_to_left(void) {
+	play_sound(100, 200);
 	if (paused)
 		paused = !paused;
 	else {
@@ -226,6 +230,7 @@ void move_frog_to_left(void) {
 }
 
 void move_frog_to_right(void) {
+	play_sound(100, 200);
 	if (paused)
 		paused = !paused;
 	else {
@@ -243,6 +248,7 @@ void move_frog_to_right(void) {
 }
 
 void move_frog_up_left(void) {
+	play_sound(100, 200);
 	if (paused)
 		paused = !paused;
 	else {
@@ -267,8 +273,9 @@ void move_frog_up_left(void) {
 }
 
 void move_frog_up_right(void) {
+	play_sound(100, 200);
 	if (paused)
-	paused = !paused;
+		paused = !paused;
 	else {
 		// Redraw the row the frog is currently on (this will remove the frog)
 		redraw_row(frog_row);
@@ -291,8 +298,9 @@ void move_frog_up_right(void) {
 }
 
 void move_frog_down_left(void) {
+	play_sound(100, 200);
 	if (paused)
-	paused = !paused;
+		paused = !paused;
 	else {
 		// Redraw the row the frog is currently on (this will remove the frog)
 		redraw_row(frog_row);
@@ -308,8 +316,9 @@ void move_frog_down_left(void) {
 }
 
 void move_frog_down_right(void) {
+	play_sound(100, 200);
 	if (paused)
-	paused = !paused;
+		paused = !paused;
 	else {
 		// Redraw the row the frog is currently on (this will remove the frog)
 		redraw_row(frog_row);

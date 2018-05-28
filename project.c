@@ -23,6 +23,7 @@
 #include "game.h"
 #include "countdown.h"
 #include "joystick.h"
+#include "sound.h"
 
 #define F_CPU 8000000L
 #include <util/delay.h>
@@ -73,12 +74,15 @@ void initialise_hardware(void) {
 	// Setup timer
 	init_timer0();
 	
-	// Set up hardware to track lives.
+	// Setup hardware to track lives.
 	init_life();
 
 	// Setup count down timer
 	init_countdown();
 	
+	// Setup sounds
+	init_sound();
+
 	// Turn on global interrupts
 	sei();
 }
@@ -124,6 +128,8 @@ void set_life(uint8_t life) {
 }
 
 void new_game(void) {
+	play_sound(200, 200);
+	play_sound(500, 300);
 	// Initialise the game and display
 	initialise_game();
 	
@@ -272,6 +278,7 @@ void play_game(void) {
 		
 		uint32_t mag = sqrt(pow(x - 500, 2) + pow(y - 500, 2));
 		int angle = atan2(y - 500, x - 500) * (180/M_PI);
+		
 		if (mag > 400) {
 			if (last_direction != 1 && angle > 60 && angle < 120) {
 				move_frog_forward();
@@ -460,6 +467,8 @@ void play_game(void) {
 			}
 		}
 	}
+	
+
 	// We get here if the frog is dead or the riverbank is full
 	// The game is over.
 }
@@ -468,6 +477,7 @@ void handle_game_over() {
 	// Reduce lives until it reaches 0 before proceeding with the normal procedure of
 	// game over handle.
 	on_same_game = 1;
+	play_sound(1000, 1000);
 	if (is_riverbank_full()) {
 		display_digit(seven_seg[(current_level % 10) + 1], 1, 0);
 		move_cursor(10,14);
