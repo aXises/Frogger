@@ -128,8 +128,7 @@ void set_life(uint8_t life) {
 }
 
 void new_game(void) {
-	play_sound(200, 200);
-	play_sound(500, 300);
+
 	// Initialise the game and display
 	initialise_game();
 	
@@ -274,6 +273,9 @@ void play_game(void) {
 		if (is_first_pass) {
 			x = 500;
 			y = 500;
+			play_sound(800, 200);
+			play_sound(1500, 300);
+			play_sound(500, 500);
 		}
 		
 		uint32_t mag = sqrt(pow(x - 500, 2) + pow(y - 500, 2));
