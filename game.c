@@ -373,15 +373,15 @@ void scroll_vehicle_lane(uint8_t lane, int8_t direction) {
 	} else if(lane_position[lane] >= LANE_DATA_WIDTH) {
 		lane_position[lane] = 0;
 	}
-	// Update whether the frog will be alive or not. (The frog hasn't moved but
-	// it may have been hit by a vehicle.)
-	frog_dead = will_frog_die_at_position(frog_row, frog_column);
 	
 	// Show the lane on the display
 	redraw_traffic_lane(lane);
 	
 	// If the frog is in this row, show it
 	if(frog_is_in_this_row) {
+		// Update whether the frog will be alive or not. (The frog hasn't moved but
+		// it may have been hit by a vehicle.)
+		frog_dead = will_frog_die_at_position(frog_row, frog_column);
 		redraw_frog();
 	}
 }
