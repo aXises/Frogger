@@ -550,6 +550,11 @@ void handle_game_over() {
 			on_same_game = 0;
 			move_cursor(10,5);
 			read_eeprom();
+			if (get_score() > 0)
+				compare_and_update(get_score());
+			move_cursor(10,5);
+			read_eeprom();
+			move_cursor(10,14);
 			printf_P(PSTR("GAME OVER"));
 			move_cursor(10,15);
 			printf_P(PSTR("Press a button to start again"));
