@@ -94,7 +94,8 @@ void splash_screen(void) {
 	printf_P(PSTR("Frogger"));
 	move_cursor(10,12);
 	printf_P(PSTR("CSSE2010/7201 project by Xinyi Li"));
-	
+	read_eeprom();
+	move_cursor(10,20);
 	// Output the scrolling message to the LED matrix
 	// and wait for a push button to be pushed.
 	ledmatrix_clear();
@@ -154,11 +155,11 @@ void set_life(uint8_t life) {
 }
 
 void print_stats() {
-	move_cursor(10,16);
+	move_cursor(10,4);
 	printf("\n Your score is : %lu\n", get_score());
-	move_cursor(10,17);
+	move_cursor(10,5);
 	printf("\n Current Level: %i \n", current_level + 1);
-	move_cursor(10,18);
+	move_cursor(10,6);
 	printf("\n Lives remaining: %i\n", current_life);
 }
 
@@ -545,7 +546,8 @@ void handle_game_over() {
 		set_life(--current_life);
 		if (current_life <= 0) {
 			on_same_game = 0;
-			move_cursor(10,14);
+			move_cursor(10,5);
+			read_eeprom();
 			printf_P(PSTR("GAME OVER"));
 			move_cursor(10,15);
 			printf_P(PSTR("Press a button to start again"));
