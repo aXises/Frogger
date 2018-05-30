@@ -57,6 +57,7 @@ void play_sound(uint16_t freq, uint32_t duration) {
 	sound_on = bit_is_set(PIND, PIND3) == 8 ? 1 : 0;
 	sound_quiet = bit_is_set(PIND, PIND5) == 32 ? 1 : 0;
 	if (!paused) {
+		clockperiod = freq_to_clock_period(freq);
 		if (sound_quiet && sound_on) {
 			pulsewidth = duty_cycle_to_pulse_width(0.1, clockperiod);
 		}
@@ -64,11 +65,10 @@ void play_sound(uint16_t freq, uint32_t duration) {
 			pulsewidth = duty_cycle_to_pulse_width(dutycycle, clockperiod);
 		}
 		else {
-			pulsewidth = duty_cycle_to_pulse_width(0, clockperiod);
+			pulsewidth = duty_cycle_to_pulse_width(0, 0);
+			clockperiod = freq_to_clock_period(0);
 		}
 	}
-	clockperiod = freq_to_clock_period(freq);
-
 
 	// Set the maximum count value for timer/counter 1 to be one less than the clockperiod
 	OCR1A = clockperiod - 1;
@@ -121,6 +121,6 @@ ISR(PCINT3_vect) {
 		else if (sound_on)
 			pulsewidth = duty_cycle_to_pulse_width(dutycycle, clockperiod);
 		else
-			pulsewidth = duty_cycle_to_pulse_width(0, clockperiod);
+			pulsewidth = duty_cycle_to_pulse_width(0, 0);
 	}
 }
