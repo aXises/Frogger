@@ -45,4 +45,17 @@ void write_eeprom_score(uint32_t score, uint8_t index) {
 	}
 }
 
+void read_eeprom(void) {
+	while(EECR & (1<<EEPE));
+	EECR |= (1<<EERE);
+	uint8_t name[12] = "temp";
+	uint32_t score;
+	move_cursor(10, 22);
+	printf("High scores: \n");
+	for (int i = 0; i < 5; i++) {
+		eeprom_read_block((void*) name, (void*) (i * 12) + offset, 12);
+		score = eeprom_read_dword((uint32_t*) (i * 32) + offset_s);
+		move_cursor(10,23+i);
+		printf("%s: %lu \n", name, score);
+	}
 }
