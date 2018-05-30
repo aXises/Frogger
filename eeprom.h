@@ -7,5 +7,6 @@
 
 
 void write_eeprom(uint8_t name[12], uint32_t score, uint8_t index);
+void compare_and_update(uint32_t current_score);
 void read_eeprom(void);
 
