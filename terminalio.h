@@ -55,6 +55,7 @@ typedef enum {
 } DisplayParameter;
 
 void move_cursor(int x, int y);
+void move_left(void);
 void normal_display_mode(void);
 void reverse_video(void);
 void clear_terminal(void);

@@ -24,6 +24,7 @@
 #include "countdown.h"
 #include "joystick.h"
 #include "sound.h"
+#include "eeprom.h"
 
 #define F_CPU 8000000L
 #include <util/delay.h>
@@ -48,11 +49,9 @@ int main(void) {
 	// Setup hardware and call backs. This will turn on 
 	// interrupts.
 	initialise_hardware();
-
 	// Show the splash screen message. Returns when display
 	// is complete
 	splash_screen();
-	current_level = 0;
 	while(1) {
 		new_game();
 		play_game();
@@ -116,16 +115,19 @@ uint8_t* request_name(void) {
 	move_cursor(0, 0);
 	printf("\nYou achieved a new highscore!\n");
 	printf("Your name: ");
-	static uint8_t name[11];
+	static uint8_t name[12];
 	int i = 0;
+	//int cursor_position = 12;
 	while (1) {
 		if(serial_input_available()) {
 			char serial_input = fgetc(stdin);
 			if (serial_input == '\n') {
 				break;
 			} else if (serial_input == 127) {
-			} 
-			else {
+			} else if (serial_input == 68) {
+				move_left();
+				i--;
+			} else {
 				if (i < 10) {
 					printf("%c", serial_input);
 					name[i] = serial_input;
@@ -134,7 +136,7 @@ uint8_t* request_name(void) {
 			}
 		}
 	}
-	name[11] = '\0';
+	name[12] = '\0';
 	return name;
 }
 

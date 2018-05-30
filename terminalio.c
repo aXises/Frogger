@@ -15,6 +15,10 @@ void move_cursor(int x, int y) {
     printf_P(PSTR("\x1b[%d;%dH"), y, x);
 }
 
+void move_left(void) {
+	printf_P(PSTR("\x1b[%dD"), 1);
+}
+
 void normal_display_mode(void) {
 	printf_P(PSTR("\x1b[0m"));
 }
