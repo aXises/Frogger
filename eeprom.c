@@ -29,3 +29,20 @@ void write_eeprom_name(uint8_t name[12], uint8_t index) {
 		sei();
 	}
 }
+
+void write_eeprom_score(uint32_t score, uint8_t index) {
+	while(EECR & (1<<EEPE));
+	int8_t interrupts_on = bit_is_set(SREG, SREG_I);
+	cli();
+	
+	EECR |= (1<<EEMPE);
+	EECR |= (1<<EEPE);
+	
+	eeprom_update_dword((uint32_t*) (index * 32) + offset_s, score);
+	
+	if (interrupts_on) {
+		sei();
+	}
+}
+
+}
