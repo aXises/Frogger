@@ -165,17 +165,18 @@ void new_game(void) {
 }
 
 void play_game(void) {
-	uint32_t current_time, last_move_time, last_button_down, last_joy_held;
+	uint32_t current_time, last_move_time, last_button_down, last_joy_held, sound_play_time;
 	uint8_t button; 
 	uint8_t pressed_button = NO_BUTTON_PUSHED;
 	char serial_input, escape_sequence_char;
 	uint8_t characters_into_escape_sequence = 0;
 	int count_ms = 0;
-
+	uint8_t tone_at = 0;
 	// Get the current time and remember this as the last time the vehicles
 	// and logs were moved.
 	current_time = get_current_time();
 	last_move_time = current_time;
+	sound_play_time = current_time;
 	
 	// Get the current time and remember the last time the button was pushed.
 	last_button_down = current_time + 500;
@@ -282,9 +283,7 @@ void play_game(void) {
 		if (is_first_pass) {
 			x = 500;
 			y = 500;
-			play_sound(800, 200);
-			play_sound(1500, 300);
-			play_sound(500, 500);
+			play_sound(500, 200);
 		}
 		
 		uint32_t mag = sqrt(pow(x - 500, 2) + pow(y - 500, 2));
@@ -428,7 +427,19 @@ void play_game(void) {
 		}
 		
 		current_time = get_current_time();
-	
+		
+		if (tone_at < 2) {
+			if (current_time >= sound_play_time + 200) {
+				play_sound(800, 300);
+				tone_at = 1;
+			}
+			
+			if (current_time >= sound_play_time + 500) {
+				play_sound(1500, 500);
+				tone_at = 2;
+			}
+		}
+		
 		// Reduce the cycle times times	
 		if(!is_frog_dead() && current_time >= last_move_time + 100) {
 			// Since the counters tick up every 100ms we can effectively set custom cycle times
