@@ -11,6 +11,7 @@
 #include "score.h"
 #include "countdown.h"
 #include "sound.h"
+#include "terminalio.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -90,14 +91,14 @@ static int8_t log_position[2];
 #define COLOUR_ROAD			COLOUR_BLACK
 PixelColour colour_logs[4] = {
 	COLOUR_ORANGE,
-	COLOUR_RED,
 	COLOUR_YELLOW,
+	COLOUR_RED,
 	COLOUR_ORANGE
 };
 PixelColour vehicle_colours[4][3] = {
 	{ COLOUR_RED, COLOUR_YELLOW, COLOUR_RED },
-	{ COLOUR_YELLOW, COLOUR_GREEN, COLOUR_YELLOW },
-	{ COLOUR_GREEN, COLOUR_RED, COLOUR_GREEN },
+	{ COLOUR_RED, COLOUR_RED, COLOUR_RED },
+	{ COLOUR_GREEN, COLOUR_LIGHT_YELLOW, COLOUR_GREEN },
 	{ COLOUR_RED, COLOUR_GREEN, COLOUR_RED }
 }; // by lane
 
@@ -178,8 +179,11 @@ void move_frog_forward(void) {
 	
 		// Check whether this move will cause the frog to die or not
 		frog_dead = will_frog_die_at_position(frog_row+1, frog_column);
-		if (!frog_dead)
+		if (!frog_dead) {
 			add_to_score(1);
+			move_cursor(10,16);
+			printf("\n Your score is : %lu\n", get_score());	
+		}
 		// Move the frog position forward and show the frog. 
 		// We do this whether the frog is alive or not. 
 		frog_row++;
@@ -188,6 +192,8 @@ void move_frog_forward(void) {
 		// If the frog has ended up successfully in row 7 - add it to the riverbank_status flag
 		if(!frog_dead && frog_row == RIVERBANK_ROW) {
 			add_to_score(10);
+			move_cursor(10,16);
+			printf("\n Your score is : %lu\n", get_score());
 			reset_countdown();
 			riverbank_status |= (1<<frog_column);
 		}

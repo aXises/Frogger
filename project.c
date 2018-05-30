@@ -127,6 +127,15 @@ void set_life(uint8_t life) {
 	PORTA = new_life;
 }
 
+void print_stats() {
+	move_cursor(10,16);
+	printf("\n Your score is : %lu\n", get_score());
+	move_cursor(10,17);
+	printf("\n Current Level: %i \n", current_level + 1);
+	move_cursor(10,18);
+	printf("\n Lives remaining: %i\n", current_life);
+}
+
 void new_game(void) {
 
 	// Initialise the game and display
@@ -148,7 +157,7 @@ void new_game(void) {
 		// Initialise the score
 		init_score();
 	}
-	
+	print_stats();
 	// Clear a button push or serial input if any are waiting
 	// (The cast to void means the return value is ignored.)
 	(void)button_pushed();
@@ -503,10 +512,9 @@ void handle_game_over() {
 			printf_P(PSTR("GAME OVER"));
 			move_cursor(10,15);
 			printf_P(PSTR("Press a button to start again"));
-			move_cursor(10,16);
-			printf("\n Your score is : %lu\n", get_score());
 		}
 		joystick_enable = 0;
+		print_stats();
 		while(button_pushed() == NO_BUTTON_PUSHED) {
 			; // wait
 		}
