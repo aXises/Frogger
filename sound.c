@@ -69,7 +69,6 @@ void play_sound(uint16_t freq, uint32_t duration) {
 			clockperiod = freq_to_clock_period(0);
 		}
 	}
-
 	// Set the maximum count value for timer/counter 1 to be one less than the clockperiod
 	OCR1A = clockperiod - 1;
 	TCCR1A = (1 <<WGM11) | (1 << WGM10);
@@ -81,7 +80,6 @@ void play_sound(uint16_t freq, uint32_t duration) {
 
 	current_time = get_current_time();
 	last_play_time = get_current_time() + duration;
-	
 }
 
 uint32_t hold_time = 0;
@@ -101,14 +99,11 @@ ISR(TIMER1_COMPA_vect) {
 			current_time = get_current_time();
 			hold_time = last_play_time - current_time;
 		}
-
 		if (current_time >= last_play_time) {
 			disable_sound();
 			last_play_time = current_time;
 		}
 	}
-
-
 }
 
 ISR(PCINT3_vect) {
