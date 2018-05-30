@@ -6,7 +6,7 @@
  */ 
 
 #define STARTING_LIVES 3;
-
+uint8_t* request_name(void);
 // Global variables
 // Initial lives of the player
 uint8_t current_life;

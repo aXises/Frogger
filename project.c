@@ -111,6 +111,32 @@ void splash_screen(void) {
 	}
 }
 
+uint8_t* request_name(void) {
+	move_cursor(0, 0);
+	printf("\nYou achieved a new highscore!\n");
+	printf("Your name: ");
+	static uint8_t name[11];
+	int i = 0;
+	while (1) {
+		if(serial_input_available()) {
+			char serial_input = fgetc(stdin);
+			if (serial_input == '\n') {
+				break;
+			} else if (serial_input == 127) {
+			} 
+			else {
+				if (i < 10) {
+					printf("%c", serial_input);
+					name[i] = serial_input;
+					i++;
+				}
+			}
+		}
+	}
+	name[11] = '\0';
+	return name;
+}
+
 // Set up life tracker with PORT D0 - D4.
 void init_life(void) {
 	current_life = STARTING_LIVES;
