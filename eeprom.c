@@ -8,6 +8,7 @@
 #include <avr/eeprom.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
+#include <ctype.h>
 #include "eeprom.h"
 #include "terminalio.h"
 #include "project.h"
@@ -54,6 +55,7 @@ void compare_and_update(uint32_t current_score) {
 	while(EECR & (1<<EEPE));
 	EECR |= (1<<EERE);
 	uint32_t score;
+	uint8_t name[12];
 	uint32_t replacables[5][2] = {
 		{0 ,0},
 		{0 ,0},
@@ -63,13 +65,21 @@ void compare_and_update(uint32_t current_score) {
 	};
 	int j = 0; 
 	for (int i = 0; i < 5; i++) {
+		eeprom_read_block((void*) name, (void*) (i * 12) + offset, 12);
 		score = eeprom_read_dword((uint32_t*) (i * 32) + offset_s);
+		if (score == 0xFFFFFFFF || !isalpha(name[0])) {
+			uint8_t *new_name = request_name();
+			if (new_name != '\0')
+				write_eeprom(new_name, current_score, i);
+			return;
+		}
 		if (current_score > score) {
 			replacables[j][0] = i;
 			replacables[j][1] = score;
 			j++; 
 		}
 	}
+	
 	uint32_t lowest_score[2] = {0, 0};
 	for (int i = 0; i < sizeof(replacables) / sizeof(replacables[0]); i++) {
 		if (replacables[i][1] != 0) {
@@ -80,9 +90,9 @@ void compare_and_update(uint32_t current_score) {
 		}
 	}
 	if (lowest_score[1] != 0) {
-		uint8_t *name = request_name();
-		if (name != '\0')
-			write_eeprom(name, current_score, lowest_score[0]);
+		uint8_t *new_name = request_name();
+		if (new_name != '\0')
+			write_eeprom(new_name, current_score, lowest_score[0]);
 	}
 }
 
@@ -96,7 +106,7 @@ void read_eeprom(void) {
 	for (int i = 0; i < 5; i++) {
 		eeprom_read_block((void*) name, (void*) (i * 12) + offset, 12);
 		score = eeprom_read_dword((uint32_t*) (i * 32) + offset_s);
-		if (score != 0xFFFFFFFF) {
+		if (score != 0xFFFFFFFF && isalpha(name[0])) {
 			move_cursor(10,23+i);
 			printf("%s: %lu \n", name, score);
 		}
