@@ -181,8 +181,8 @@ void move_frog_forward(void) {
 		frog_dead = will_frog_die_at_position(frog_row+1, frog_column);
 		if (!frog_dead) {
 			add_to_score(1);
-			move_cursor(10,16);
-			printf("\n Your score is : %lu\n", get_score());	
+			move_cursor(10,1);
+			printf("\nYour score is: %9lu\n", get_score());	
 		}
 		// Move the frog position forward and show the frog. 
 		// We do this whether the frog is alive or not. 
@@ -192,8 +192,8 @@ void move_frog_forward(void) {
 		// If the frog has ended up successfully in row 7 - add it to the riverbank_status flag
 		if(!frog_dead && frog_row == RIVERBANK_ROW) {
 			add_to_score(10);
-			move_cursor(10,16);
-			printf("\n Your score is : %lu\n", get_score());
+			move_cursor(10,1);
+			printf("\nYour score is: %9lu\n", get_score());
 			reset_countdown();
 			riverbank_status |= (1<<frog_column);
 		}

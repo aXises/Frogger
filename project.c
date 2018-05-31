@@ -112,6 +112,8 @@ void splash_screen(void) {
 }
 
 uint8_t* request_name(void) {
+	clear_terminal();
+	read_eeprom();
 	move_cursor(0, 0);
 	printf("\nYou achieved a new highscore!\n");
 	printf("Your name: ");
@@ -137,6 +139,7 @@ uint8_t* request_name(void) {
 		}
 	}
 	name[12] = '\0';
+	clear_terminal();
 	return name;
 }
 
@@ -157,12 +160,12 @@ void set_life(uint8_t life) {
 }
 
 void print_stats() {
-	move_cursor(10,4);
-	printf("\n Your score is : %lu\n", get_score());
-	move_cursor(10,5);
-	printf("\n Current Level: %i \n", current_level + 1);
-	move_cursor(10,6);
-	printf("\n Lives remaining: %i\n", current_life);
+	move_cursor(10,1);
+	printf("\nYour score is: %9lu\n", get_score());
+	move_cursor(10,2);
+	printf("\nCurrent Level: %9i \n", current_level + 1);
+	move_cursor(10,3);
+	printf("\nLives remaining: %7i\n", current_life);
 }
 
 void new_game(void) {
@@ -185,8 +188,10 @@ void new_game(void) {
 		set_life(current_life);
 		// Initialise the score
 		init_score();
+	} else {
+		move_cursor(10,1);
+		printf("\nYour score is: %9lu\n", get_score());
 	}
-	print_stats();
 	// Clear a button push or serial input if any are waiting
 	// (The cast to void means the return value is ignored.)
 	(void)button_pushed();
@@ -549,10 +554,8 @@ void handle_game_over() {
 		if (current_life <= 0) {
 			on_same_game = 0;
 			move_cursor(10,5);
-			read_eeprom();
 			if (get_score() > 0)
 				compare_and_update(get_score());
-			move_cursor(10,5);
 			read_eeprom();
 			move_cursor(10,14);
 			printf_P(PSTR("GAME OVER"));
