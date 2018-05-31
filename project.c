@@ -241,10 +241,14 @@ void play_game(void) {
 			display_digit(seven_seg[time_remaining_s % 10], 0, 0);
 		else {
 			count_ms = 1;
-			if (cc)
-				display_digit(seven_seg[0], 1, 1);
-			else {
-				display_digit(seven_seg[time_remaining_ms > 0 ? time_remaining_ms - 1 : 0], 0, 0);
+			if (time_remaining_ms > 10) {
+					display_digit(seven_seg[1], 0, 0);
+			} else {
+				if (cc)
+					display_digit(seven_seg[0], 1, 1);
+				else
+					display_digit(seven_seg[time_remaining_ms > 0 ? time_remaining_ms - 1 : 0], 0, 0);
+				
 			}
 		}
 		

@@ -25,6 +25,6 @@ void init_countdown() {
 }
 
 void reset_countdown() {
-	time_remaining_ms = 10;
+	time_remaining_ms = 11;
 	time_remaining_s = 15;
 }
