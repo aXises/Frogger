@@ -479,7 +479,7 @@ void play_game(void) {
 			// Since the counters tick up every 100ms we can effectively set custom cycle times
 			// by adjusting the max value the counter should tick up to.
 			// 1000ms (10 * 100) cycle
-			int scale = current_level < 6 ? current_level : 6;
+			double scale = current_level < 6 ? current_level : current_level * (1.1);
 			if (!paused) {
 				if (counters[0] > (10 - scale)) {
 					scroll_vehicle_lane(0, 1);
